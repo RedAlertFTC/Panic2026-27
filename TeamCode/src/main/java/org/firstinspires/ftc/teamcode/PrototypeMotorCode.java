@@ -11,7 +11,7 @@ public class PrototypeMotorCode extends LinearOpMode {
 
     @Override
     public void runOpMode(){
-        input_motor = hardwareMap.get(DcMotor.class, "fl");
+        input_motor = hardwareMap.get(DcMotor.class, "im");
         input_motor.setDirection(DcMotor.Direction.FORWARD);
 
         while (opModeIsActive()) {
