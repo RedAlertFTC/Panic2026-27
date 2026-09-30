@@ -9,11 +9,17 @@ public class PrototypeMotorCode extends LinearOpMode {
 
     private DcMotor input_motor = null;
 
+  //  @Override
+    //public void waitForStart() {
+      //  super.waitForStart();
+    //}
+
     @Override
     public void runOpMode(){
         input_motor = hardwareMap.get(DcMotor.class, "im");
         input_motor.setDirection(DcMotor.Direction.FORWARD);
 
+        waitForStart();
         while (opModeIsActive()) {
 
             if (gamepad1.left_stick_y > 0) {
