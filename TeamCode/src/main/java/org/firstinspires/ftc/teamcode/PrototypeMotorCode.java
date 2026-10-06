@@ -31,9 +31,9 @@ public class PrototypeMotorCode extends LinearOpMode {
                 input_motor.setPower(0);
             }
 
-            if (gamepad2.left_stick_y > 0) {
+            if (gamepad1.right_stick_y > 0) {
                 input_motor.setPower(500);
-            } else if(gamepad2.left_stick_y < 0) {
+            } else if(gamepad1.right_stick_y < 0) {
                 input_motor.setPower(-500);
             }
             else{
