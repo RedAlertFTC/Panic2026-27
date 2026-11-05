@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="Basic: BasicTele0p", group="Basic TeleOp")
 public class BasicTeleOp extends LinearOpMode {
@@ -13,9 +14,22 @@ public class BasicTeleOp extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor frontRightDrive = null;
     private DcMotor backRightDrive = null;
+    private DcMotor IntakeMotor = null;
 
+    private boolean motorOn = false;
+    private boolean lastButtonState = false;
     @Override
     public void runOpMode() {
+
+        IntakeMotor = hardwareMap.get(DcMotor.class, "Intake Motor");
+        IntakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        IntakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        telemetry.addData("Status", "Initialized. Awaiting Start...");
+        telemetry.update();
+
+        waitForStart();
+
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
@@ -74,6 +88,26 @@ public class BasicTeleOp extends LinearOpMode {
                 backLeftPower   /= max;
                 backRightPower  /= max;
             }
+
+            boolean currentButtonState = gamepad1.x;
+
+            if (currentButtonState && !lastButtonState) {
+
+                motorOn = !motorOn;
+            }
+
+            lastButtonState = currentButtonState;
+
+            if (motorOn) {
+                IntakeMotor.setPower(0.5);
+            } else {
+                IntakeMotor.setPower(0.0);
+            }
+
+            telemetry.addData("Button X State", currentButtonState);
+            telemetry.addData("Motor Toggle State", motorOn ? "Running" : "STOPPED");
+            telemetry.addData("Motor Power", IntakeMotor.getPower());
+            telemetry.update();
 
             // This is test code:
             //
