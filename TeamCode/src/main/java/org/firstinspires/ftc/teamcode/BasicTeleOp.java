@@ -16,6 +16,12 @@ public class BasicTeleOp extends LinearOpMode {
     private DcMotor backRightDrive = null;
     private DcMotor IntakeMotor = null;
 
+    private DcMotor OutakeMotor = null;
+
+    private boolean OmotorOn = false;
+
+    private boolean OlastButtonState = false;
+
     private boolean motorOn = false;
     private boolean lastButtonState = false;
     @Override
@@ -24,6 +30,10 @@ public class BasicTeleOp extends LinearOpMode {
         IntakeMotor = hardwareMap.get(DcMotor.class, "Intake Motor");
         IntakeMotor.setDirection(DcMotor.Direction.FORWARD);
         IntakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        OutakeMotor = hardwareMap.get(DcMotor.class, "OutakeMotor");
+        OutakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        OutakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         telemetry.addData("Status", "Initialized. Awaiting Start...");
         telemetry.update();
@@ -88,6 +98,8 @@ public class BasicTeleOp extends LinearOpMode {
                 backLeftPower   /= max;
                 backRightPower  /= max;
             }
+            //currentButtonState and OcurrentButtonState are VARIABLES, NOT FUNCTIONS
+            //They MUST be labeled differently to avoid code lines interfering with each other
 
             boolean currentButtonState = gamepad1.x;
 
@@ -109,22 +121,27 @@ public class BasicTeleOp extends LinearOpMode {
             telemetry.addData("Motor Power", IntakeMotor.getPower());
             telemetry.update();
 
-            // This is test code:
-            //
-            // Uncomment the following code to test your motor directions.
-            // Each button should make the corresponding motor run FORWARD.
-            //   1) First get all the motors to take to correct positions on the robot
-            //      by adjusting your Robot Configuration if necessary.
-            //   2) Then make sure they run in the correct direction by modifying the
-            //      the setDirection() calls above.
-            // Once the correct motors move in the correct direction re-comment this code.
+            boolean OcurrentButtonState = gamepad1.y;
 
-            /*
-            frontLeftPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
-            backLeftPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad
-            frontRightPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
-            backRightPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
-            */
+            if(OcurrentButtonState && !OlastButtonState) {
+
+                OmotorOn = !OmotorOn;
+            }
+
+            OlastButtonState = OcurrentButtonState;
+
+            if (OmotorOn) {
+                OutakeMotor.setPower(0.5);
+            } else {
+                OutakeMotor.setPower(0.0);
+            }
+
+            telemetry.addData("Button Y State", OcurrentButtonState);
+            telemetry.addData("Motor Toggle State", OmotorOn ? "Running" : "STOPPED");
+            telemetry.addData("Motor Power", OutakeMotor.getPower());
+            telemetry.update();
+
+
 
             // Send calculated power to wheels
             frontLeftDrive.setPower(frontLeftPower);
@@ -139,6 +156,5 @@ public class BasicTeleOp extends LinearOpMode {
             telemetry.update();
         }
     }
-
 
 }
